@@ -1,0 +1,2 @@
+
+export { Hospital } from './hospital';

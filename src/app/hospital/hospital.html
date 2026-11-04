@@ -1,0 +1,176 @@
+
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="#" (click)="openPage('Dashboard'); $event.preventDefault()">
+      <span class="brand-mark">+</span>
+      <span><strong>MediCare</strong><small>Hospital management</small></span>
+    </a>
+
+    <p class="nav-label">WORKSPACE</p>
+    <nav aria-label="Main navigation">
+      <button type="button" [class.active]="activePage === 'Dashboard'" (click)="openPage('Dashboard')">
+        <span class="nav-icon">⌂</span> Dashboard
+      </button>
+      <button type="button" [class.active]="activePage === 'Patients'" (click)="openPage('Patients')">
+        <span class="nav-icon">♙</span> Patients
+      </button>
+      <button type="button" [class.active]="activePage === 'Add Patient'" (click)="openPage('Add Patient')">
+        <span class="nav-icon">＋</span> Add patient
+      </button>
+      <button type="button" [class.active]="activePage === 'Doctors'" (click)="openPage('Doctors')">
+        <span class="nav-icon">✚</span> Doctors
+      </button>
+      <button type="button" [class.active]="activePage === 'Appointments'" (click)="openPage('Appointments')">
+        <span class="nav-icon">◷</span> Appointments
+      </button>
+      <button type="button" [class.active]="activePage === 'Departments'" (click)="openPage('Departments')">
+        <span class="nav-icon">▦</span> Departments
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="support-mark">i</div>
+      <div><strong>Care made simpler</strong><small>Hospital Management System</small></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MEDICARE HEALTH NETWORK</p>
+        <h1>{{ activePage }}</h1>
+      </div>
+      <div class="admin">
+        <span class="admin-avatar">A</span>
+        <span><strong>Administrator</strong><small>Hospital staff</small></span>
+      </div>
+    </header>
+
+    <section *ngIf="activePage === 'Dashboard'" class="page-section">
+      <div class="welcome-panel">
+        <div>
+          <p class="eyebrow">OVERVIEW</p>
+          <h2>Your hospital at a glance</h2>
+          <p>Monitor patient care and daily operations from one place.</p>
+        </div>
+        <button type="button" class="primary-button" (click)="openPage('Add Patient')">＋ Add patient</button>
+      </div>
+
+      <div class="stats">
+        <article class="stat-card">
+          <div class="stat-top"><span>Total patients</span><span class="stat-icon blue">♙</span></div>
+          <strong class="stat-value">{{ patients.length }}</strong>
+          <p>Registered in the system</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Currently admitted</span><span class="stat-icon teal">＋</span></div>
+          <strong class="stat-value">{{ admittedCount }}</strong>
+          <p>Patients receiving care</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Medical staff</span><span class="stat-icon violet">✚</span></div>
+          <strong class="stat-value">{{ doctors.length }}</strong>
+          <p>Doctors on the directory</p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-top"><span>Appointments</span><span class="stat-icon amber">◷</span></div>
+          <strong class="stat-value">{{ appointments.length }}</strong>
+          <p>Scheduled in the system</p>
+        </article>
+      </div>
+
+      <div class="content-card">
+        <div class="section-heading">
+          <div><h2>Recent patients</h2><p>Latest patient records</p></div>
+          <button type="button" class="text-button" (click)="openPage('Patients')">View all patients <span>→</span></button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Age</th><th>Condition</th><th>Assigned doctor</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let p of patients">
+                <td><div class="patient-name"><span class="patient-avatar">{{ p.name.charAt(0) }}</span><span><strong>{{ p.name }}</strong><small>Patient ID #{{ p.id }}</small></span></div></td>
+                <td>{{ p.age }}</td><td>{{ p.disease }}</td><td>{{ p.doctor }}</td>
+                <td><span class="status" [class.status-admitted]="p.status === 'Admitted'" [class.status-discharged]="p.status === 'Discharged'">{{ p.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activePage === 'Patients'" class="page-section">
+      <div class="content-card">
+        <div class="section-heading">
+          <div><h2>Patient records</h2><p>Search and manage registered patients</p></div>
+          <div class="heading-actions">
+            <label class="search-box"><span>⌕</span><input type="search" aria-label="Search patients" placeholder="Search patients..." [(ngModel)]="searchText"></label>
+            <button type="button" class="primary-button" (click)="openPage('Add Patient')">＋ Add patient</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Age / Gender</th><th>Condition</th><th>Assigned doctor</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let p of filteredPatients">
+                <td><div class="patient-name"><span class="patient-avatar">{{ p.name.charAt(0) }}</span><span><strong>{{ p.name }}</strong><small>Patient ID #{{ p.id }}</small></span></div></td>
+                <td>{{ p.age }} / {{ p.gender }}</td><td>{{ p.disease }}</td><td>{{ p.doctor }}</td>
+                <td><span class="status" [class.status-admitted]="p.status === 'Admitted'" [class.status-discharged]="p.status === 'Discharged'">{{ p.status }}</span></td>
+                <td><button type="button" class="delete-btn" (click)="deletePatient(p.id)" aria-label="Delete {{ p.name }}">Remove</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="empty-state" *ngIf="filteredPatients.length === 0">No patients match your search.</p>
+      </div>
+    </section>
+
+    <section *ngIf="activePage === 'Add Patient'" class="page-section">
+      <div class="content-card form-card">
+        <div class="section-heading"><div><h2>Register a patient</h2><p>Enter patient details to create a new record.</p></div></div>
+        <form (ngSubmit)="addPatient()">
+          <div class="form-grid">
+            <label>Patient name<input type="text" name="name" [(ngModel)]="newPatient.name" placeholder="e.g. Alex Morgan" required></label>
+            <label>Age<input type="number" name="age" [(ngModel)]="newPatient.age" min="1" max="120" placeholder="Enter age" required></label>
+            <label>Gender<select name="gender" [(ngModel)]="newPatient.gender"><option>Male</option><option>Female</option><option>Other</option></select></label>
+            <label>Condition<input type="text" name="disease" [(ngModel)]="newPatient.disease" placeholder="e.g. General check-up" required></label>
+            <label>Assign doctor<select name="doctor" [(ngModel)]="newPatient.doctor" required><option value="">Select a doctor</option><option *ngFor="let d of doctors" [value]="d.name">{{ d.name }}</option></select></label>
+            <label>Patient status<select name="status" [(ngModel)]="newPatient.status"><option>Admitted</option><option>Discharged</option></select></label>
+          </div>
+          <div class="form-actions"><button type="submit" class="primary-button">Create patient record</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section *ngIf="activePage === 'Doctors'" class="page-section">
+      <div class="section-intro"><h2>Medical team</h2><p>Doctors and their areas of care.</p></div>
+      <div class="doctor-grid">
+        <article class="doctor-card" *ngFor="let d of doctors">
+          <div class="doctor-avatar">✚</div><span class="status status-admitted">Available</span>
+          <h3>{{ d.name }}</h3><p>{{ d.department }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section *ngIf="activePage === 'Appointments'" class="page-section">
+      <div class="content-card">
+        <div class="section-heading"><div><h2>Appointment schedule</h2><p>Upcoming visits and assigned care teams</p></div><span class="count-label">{{ appointments.length }} scheduled</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th></tr></thead>
+            <tbody><tr *ngFor="let a of appointments"><td><strong>{{ a.patient }}</strong></td><td>{{ a.doctor }}</td><td>{{ a.date }}</td><td>{{ a.time }}</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activePage === 'Departments'" class="page-section">
+      <div class="section-intro"><h2>Departments</h2><p>Explore the hospital’s clinical departments.</p></div>
+      <div class="doctor-grid department-grid">
+        <article class="doctor-card department-card" *ngFor="let d of departments">
+          <div class="doctor-avatar">✚</div><h3>{{ d }}</h3><p>Clinical department</p>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>
