@@ -1,9 +1,9 @@
-# 🏥 HCL Hospital Management System
+#  Hospital Management System
 
-## 📌 Project Overview
+##  Project Overview
 The **Hospital Management System** is an Angular-based web application designed to simplify and manage hospital operations. It provides an organized interface for managing patients, doctors, appointments, and hospital departments.
 
-## ✨ Features
+##  Features
 
 - **Dashboard:** View hospital management information.
 - **Patient Management:** View and manage patient records.
@@ -13,7 +13,7 @@ The **Hospital Management System** is an Angular-based web application designed 
 - **Department Management:** Manage hospital departments.
 - **Navigation:** Easy navigation between different sections.
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 - Angular
 - TypeScript
@@ -22,7 +22,7 @@ The **Hospital Management System** is an Angular-based web application designed 
 - Node.js
 - npm
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 hospital-management/
